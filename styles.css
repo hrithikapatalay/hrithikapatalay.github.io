@@ -367,3 +367,7 @@ p { margin: 0; }
 }
 .no-motion .sel-pin { height: auto; }
 .no-motion .sel-track { overflow-x: auto; padding-bottom: 16px; }
+
+/* certificate links */
+.cert{color:inherit;text-decoration:underline;text-decoration-color:#A9823A;text-underline-offset:3px;text-decoration-thickness:1px}
+.cert:hover{color:#A9823A}
