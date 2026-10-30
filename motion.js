@@ -240,7 +240,7 @@
   // ---------- misc reveals ----------
   function sections() {
     $$(".section-head h2, .sub, .contact h2").forEach(h => revealHeading(h));
-    fadeUp($$(".section-head p, .filters, .role, .table-wrap, .contact p, .contact-links"));
+    fadeUp($$(".section-head p, .filters, .role, .table-wrap, .exp-profile, .terms p, .contact p, .contact-links"));
     $$(".modules .bar-fill").forEach(f => {
       const w = f.style.width; f.style.width = "0%";
       ST.create({ trigger: f, start: "top 95%", once: true, onEnter: () => gsap.to(f, { width: w, duration: 1.3, ease: "expo.out" }) });
