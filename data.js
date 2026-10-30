@@ -5,7 +5,7 @@ window.SITE = {
   name: "Hrithika Patalay",
   role: "Brand & go-to-market strategist",
   location: "London",
-  email: "patalayhrithika@outlook.com",
+  email: "hpatalay.freelance@gmail.com",
   linkedin: "https://www.linkedin.com/in/hrithika-patalay-338713172/",
   meeting: "https://calendar.app.google/n2P9qxfenhPuk8kK8",
   cv: "assets/Hrithika_Patalay_CV.pdf",
