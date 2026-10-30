@@ -371,15 +371,3 @@ p { margin: 0; }
 /* certificate links */
 .cert{color:inherit;text-decoration:underline;text-decoration-color:#A9823A;text-underline-offset:3px;text-decoration-thickness:1px}
 .cert:hover{color:#A9823A}
-
-/* CV mirror */
-.exp-profile{font-size:clamp(18px,1.6vw,22px);line-height:1.55;max-width:70ch;margin:0 0 8px}
-.exp-wide{grid-template-columns:1fr}
-.exp-wide .role ul{columns:2;column-gap:56px}
-.exp-wide .role li{break-inside:avoid}
-.role li b{font-weight:600}
-.terms{gap:14px 56px;margin-top:24px}
-.terms p{font-size:16px;margin:0;padding:14px 0;border-bottom:1px solid var(--line)}
-.terms b{font-weight:600}
-@media (max-width:860px){.exp-wide .role ul{columns:1}}
-.edu td:nth-child(4){white-space:nowrap}
