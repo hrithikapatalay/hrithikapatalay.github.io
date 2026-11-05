@@ -1,59 +1,49 @@
 (function () {
-  const S = window.SITE, CAPS = window.CAPABILITIES, P = window.PROJECTS, M = window.MODULES;
+  const S = window.SITE, CAPS = window.CAPABILITIES, P = window.PROJECTS;
+  const CMAP = window.CAPABILITY_MAP || [], BRANDS = window.BRANDS || [];
   const capOf = Object.fromEntries(CAPS.map(c => [c.key, c]));
+  const bySlug = Object.fromEntries(P.map(p => [p.slug, p]));
   const $ = (s, r = document) => r.querySelector(s);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const pos = g => Math.max(0, Math.min(100, (g - 80) / 20 * 100));
   const MO = window.MOTION || null;
+  const formatLabel = p => p.format === "Client" ? "Client project" : p.format;
 
   // ---------- static bits ----------
   $("#count-projects").textContent = P.length;
+  $("#count-all").textContent = P.length;
   $("#year").textContent = new Date().getFullYear();
   $("#mail").href = "mailto:" + S.email;
   $("#cv").href = S.cv;
   $("#li").href = S.linkedin;
   $("#meet").href = S.meeting;
 
-  // ---------- capability index ----------
-  $("#index").innerHTML = CAPS.map((c, i) => {
-    const grades = c.modules.map(m => m[1]);
-    const lo = Math.min(...grades), hi = Math.max(...grades);
-    const projects = P.filter(p => p.cap === c.key);
-    return `<li class="cap" style="--cap:${c.hue}">
-      <button class="cap-row" aria-expanded="false" aria-controls="cap-${c.key}">
-        <span class="cap-name">${esc(c.name)}<small>${c.modules.length} module${c.modules.length > 1 ? "s" : ""}, ${projects.length} projects</small></span>
-        <span class="scale" aria-hidden="true">
-          <span class="range" style="left:${pos(lo)}%;width:${Math.max(pos(hi) - pos(lo), 0.6)}%"></span>
-          ${grades.map(g => `<span class="dot" style="left:${pos(g)}%"></span>`).join("")}
-          ${i === 0 ? `<span class="tick" style="left:0">80</span><span class="tick" style="left:50%">90</span><span class="tick" style="left:100%">100</span>` : ""}
-        </span>
-        <span class="cap-top">${hi}%<span>top mark</span></span>
-        <span class="chev" aria-hidden="true"></span>
-      </button>
-      <div class="cap-body" id="cap-${c.key}" hidden>
-        <div>
-          <p style="margin-bottom:22px">${esc(c.line)}</p>
-          <blockquote><p>"${esc(c.quote)}"</p><footer>Professor feedback, ${esc(c.source)}</footer></blockquote>
-        </div>
-        <div>
-          <ul class="cap-mods">${c.modules.map(m => `<li><span>${esc(m[0])}</span><b>${m[1]}%</b></li>`).join("")}</ul>
-          <div class="cap-proj">${projects.map(p => `<a href="#/work/${p.slug}">${esc(p.client)}</a>`).join("")}</div>
-        </div>
-      </div>
-    </li>`;
-  }).join("");
-  $("#index").addEventListener("click", e => {
-    const b = e.target.closest(".cap-row"); if (!b) return;
-    const open = b.getAttribute("aria-expanded") === "true";
-    b.setAttribute("aria-expanded", String(!open));
-    const body = $("#" + b.getAttribute("aria-controls"));
-    if (MO) MO.toggle(body, !open); else body.hidden = open;
-  });
+  // name or official logo (logos are only used for Hult case-study brands)
+  const mark = (name, logo, cls) => logo
+    ? `<img class="${cls}-logo" src="${esc(logo)}" alt="${esc(name)}">`
+    : esc(name);
+  const badges = p => [
+    `<span class="chip">${esc(formatLabel(p))}</span>`,
+    p.live ? `<span class="chip chip-live">Live brief</span>` : "",
+  ].join("");
 
-  // ---------- work grid ----------
+  // ---------- capability map ----------
+  $("#cmap").innerHTML = CMAP.map((c, i) => `<li class="cm-row">
+      <span class="cm-n">${String(i + 1).padStart(2, "0")}</span>
+      <h3 class="cm-name">${esc(c.name)}</h3>
+      <ul class="cm-ev">${c.ev.map(e => {
+        const tag = `<span class="src src-${e.src.toLowerCase()}">${esc(e.src)}</span>`;
+        const live = e.live ? ` <span class="chip chip-live">Live brief</span>` : "";
+        const body = e.slug && bySlug[e.slug]
+          ? `<a href="#/work/${e.slug}" data-cursor="Open">${esc(e.text)}</a>`
+          : esc(e.text);
+        return `<li>${tag}<span>${body}${live}</span></li>`;
+      }).join("")}</ul>
+    </li>`).join("");
+
+  // ---------- work tab: grid of everything ----------
   let filter = "all";
-  const filters = [["all", "All", P.length],
-    ...CAPS.map(c => [c.key, c.name, P.filter(p => p.cap === c.key).length])];
+  const used = CAPS.filter(c => P.some(p => p.cap === c.key));
+  const filters = [["all", "All", P.length], ...used.map(c => [c.key, c.name, P.filter(p => p.cap === c.key).length])];
   $("#filters").innerHTML = filters.map(([k, n, c]) =>
     `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${esc(n)}<span>${c}</span></button>`).join("");
   $("#filters").addEventListener("click", e => {
@@ -62,63 +52,60 @@
     $("#filters").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     renderGrid();
   });
-  const order = (a, b) => (b.grade || 0) - (a.grade || 0);
+  const order = (a, b) => (a.featured || 99) - (b.featured || 99) || b.year - a.year;
   function card(p) {
     const c = capOf[p.cap];
-    const grade = p.grade ? `<span class="cover-grade">${p.grade}%</span>` : `<span class="cover-grade none">Classwork</span>`;
     return `<li class="card" style="--cap:${c.hue}"><a href="#/work/${p.slug}" data-cursor="View">
       <div class="cover"><div class="cover-cap"><span>${esc(c.name)}</span><span>${p.year}</span></div>
-        <div><div class="cover-client">${esc(p.client)}</div></div>
-        <div class="cover-cap"><span>${esc(p.format)}</span>${grade}</div></div>
+        <div><div class="cover-client">${mark(p.client, p.logo, "cover")}</div></div>
+        <div class="cover-cap cover-chips">${badges(p)}</div></div>
       <div class="card-text"><h3>${esc(p.title)}</h3><p>${esc(p.module)}</p></div></a></li>`;
   }
   function renderGrid() {
-    const list = filter === "all" ? P.slice().sort(order) : P.filter(p => p.cap === filter).sort(order);
+    const list = (filter === "all" ? P : P.filter(p => p.cap === filter)).slice().sort(order);
     $("#grid").innerHTML = list.map(card).join("");
     if (MO) MO.onGrid($("#grid"));
   }
   renderGrid();
 
-  // ---------- selected work (horizontal track) ----------
-  $("#sel").innerHTML = P.filter(p => p.featured).map((p, i, all) => {
+  // ---------- selected work: six Hult case studies ----------
+  const six = P.filter(p => p.featured).sort((a, b) => a.featured - b.featured);
+  $("#sel").innerHTML = six.map((p, i) => {
     const c = capOf[p.cap];
     return `<li class="sel-card" style="--cap:${c.hue}"><a href="#/work/${p.slug}" data-cursor="View">
       <div class="sel-cover">
-        <div class="cover-cap"><span>${esc(c.name)}</span><span>${String(i + 1).padStart(2, "0")} of ${String(all.length).padStart(2, "0")}</span></div>
-        <div class="sel-client">${esc(p.client)}</div>
-        <div class="cover-cap"><span>${esc(p.title)}</span>${p.grade ? `<span class="cover-grade">${p.grade}%</span>` : `<span class="cover-grade none">Classwork</span>`}</div>
+        <div class="cover-cap"><span>${esc(c.name)}</span><span>${String(i + 1).padStart(2, "0")} of ${String(six.length).padStart(2, "0")}</span></div>
+        <div class="sel-mid">
+          <div class="sel-client">${mark(p.client, p.logo, "sel")}</div>
+          <p class="sel-title">${esc(p.title)}</p>
+        </div>
+        <blockquote class="sel-quote"><p>“${esc(p.quote)}”</p><footer><span>Professor feedback</span><span class="sel-chips">${badges(p)}</span></footer></blockquote>
       </div></a></li>`;
   }).join("");
 
   // ---------- marquee ----------
-  const names = ["Bentley Motors", "Canada Goose", "vivo", "Airbnb", "Spotify", "Stella McCartney", "H&M", "Tesco", "Nykaa", "Reliance Jio", "BuzzBallz", "Long Lane", "DS Smith", "Jude's", "IKEA", "upGrad", "Monday.com", "JoJo's Vineyard", "FRED"];
-  const run = names.map(n => `<span>${esc(n)}</span><i></i>`).join("");
+  const run = BRANDS.map(b => `<span>${mark(b.name, b.logo, "mq")}</span><i></i>`).join("");
   $("#marquee").innerHTML = `<div class="marquee-run">${run}</div><div class="marquee-run">${run}</div>`;
-
-  // ---------- modules ----------
-  $("#modules").innerHTML = M.map(([n, g]) =>
-    `<li><span>${esc(n)}</span><span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:${pos(g)}%"></span></span><b>${g}%</b></li>`).join("");
 
   // ---------- project page ----------
   function renderProject(slug) {
     const i = P.findIndex(p => p.slug === slug);
     if (i < 0) return false;
-    const p = P[i], c = capOf[p.cap], next = P[(i + 1) % P.length];
-    const pdf = "reports/" + p.pdf;
-    const gradeCell = p.grade
-      ? `<div><dt>Module grade</dt><dd class="grade">${p.grade}%</dd></div>`
-      : `<div><dt>Grade</dt><dd>Ungraded classwork</dd></div>`;
+    const list = P.slice().sort(order);
+    const k = list.findIndex(p => p.slug === slug);
+    const p = P[i], c = capOf[p.cap], next = list[(k + 1) % list.length];
+    const pdf = p.pdf ? "reports/" + p.pdf : null;
+    const credit = p.format === "Client" ? "" : "Professor feedback";
     $("#project").innerHTML = `
       <div class="p-cover" style="--cap:${c.hue}"><div class="p-cover-in">
         <a class="back" href="#/work">Back to all work</a>
-        <p class="p-client">${esc(p.client)}</p>
+        <p class="p-client">${esc(p.client)}${p.live ? ` <span class="chip chip-live">Live brief</span>` : ""}</p>
         <h1 class="p-title">${esc(p.title)}</h1>
       </div></div>
       <dl class="p-meta">
-        <div><dt>Capability</dt><dd>${esc(c.name)}</dd></div>
-        <div><dt>Module</dt><dd>${esc(p.module)}</dd></div>
-        ${gradeCell}
-        <div><dt>Format</dt><dd>${esc(p.format)}</dd></div>
+        <div><dt>Discipline</dt><dd>${esc(c.name)}</dd></div>
+        <div><dt>${p.format === "Client" ? "Type" : "Module"}</dt><dd>${esc(p.module)}</dd></div>
+        <div><dt>Format</dt><dd>${esc(formatLabel(p))}</dd></div>
         <div><dt>Year</dt><dd>${p.year}</dd></div>
       </dl>
       <div class="p-body" style="--cap:${c.hue}">
@@ -127,16 +114,16 @@
           <section class="p-block"><h2>What I did</h2><ul>${p.points.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>
         </div>
         <aside class="p-side">
-          ${p.quote ? `<blockquote class="p-quote"><p>"${esc(p.quote)}"</p><footer>Professor feedback${p.grade ? `, module grade ${p.grade}%` : ""}</footer></blockquote>` : ""}
-          <a class="btn" href="${pdf}" target="_blank" rel="noopener">View full report</a>
+          ${p.quote ? `<blockquote class="p-quote"><p>“${esc(p.quote)}”</p><footer>${credit}</footer></blockquote>` : ""}
+          ${pdf ? `<a class="btn" href="${pdf}" target="_blank" rel="noopener">View full report</a>` : `<p class="p-note">The full report belongs to the client and is available on request.</p>`}
           <p class="p-role"><b>My role</b>${esc(p.role)}</p>
           <div class="tags">${p.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>
         </aside>
       </div>
-      <section class="viewer"><h2>Full report</h2>
+      ${pdf ? `<section class="viewer"><h2>Full report</h2>
         <iframe src="${pdf}#view=FitH" title="${esc(p.client)} report" loading="lazy"></iframe>
         <p>If the report doesn't display on your device, <a href="${pdf}" target="_blank" rel="noopener">open the PDF in a new tab</a>.</p>
-      </section>
+      </section>` : ""}
       <nav class="p-next" aria-label="Next project"><a href="#/work/${next.slug}"><small>Next project</small><strong>${esc(next.client)}</strong><span>${esc(next.title)}</span></a></nav>`;
     document.title = `${p.client}: ${p.title} — Hrithika Patalay`;
     if (MO) MO.onProject($("#project"));
@@ -144,32 +131,47 @@
   }
 
   // ---------- router ----------
+  // #/                 home
+  // #/experience etc.  home, scrolled to that section
+  // #/work             the Work tab: every project
+  // #/work/<slug>      one project
   const homeTitle = document.title;
   let lastView = null;
+  const viewOf = h => /^#\/work\/.+/.test(h) ? "project" : /^#\/work\/?$/.test(h) ? "archive" : "home";
   function show() {
     const h = location.hash.replace(/^#\/?/, "");
     const [a1, b1] = h.split("/");
-    const home = $("#home"), proj = $("#project");
+    const home = $("#home"), proj = $("#project"), arch = $("#archive");
     document.querySelectorAll(".bar nav a").forEach(x => x.removeAttribute("aria-current"));
-    if (a1 === "work" && b1 && renderProject(b1)) {
-      home.hidden = true; proj.hidden = false;
+    const v = viewOf(location.hash);
+    if (v === "project" && renderProject(b1)) {
+      home.hidden = true; arch.hidden = true; proj.hidden = false;
       MO ? MO.top() : window.scrollTo(0, 0);
       $('.bar nav a[href="#/work"]').setAttribute("aria-current", "true");
       lastView = "project"; if (MO) MO.refresh(() => MO.top());
       return;
     }
-    const wasProject = lastView === "project";
-    proj.hidden = true; home.hidden = false; document.title = homeTitle; lastView = "home";
-    if (MO && !a1) MO.refresh();
+    if (v === "archive") {
+      home.hidden = true; proj.hidden = true; arch.hidden = false;
+      document.title = "All work — Hrithika Patalay";
+      $('.bar nav a[href="#/work"]').setAttribute("aria-current", "true");
+      MO ? MO.top() : window.scrollTo(0, 0);
+      if (MO) { MO.onGrid($("#grid")); MO.refresh(() => MO.top()); }
+      lastView = "archive";
+      return;
+    }
+    const wasAway = lastView && lastView !== "home";
+    proj.hidden = true; arch.hidden = true; home.hidden = false; document.title = homeTitle; lastView = "home";
+    if (MO && (!a1 || wasAway)) MO.refresh();
     const target = a1 && document.getElementById(a1);
     if (target) {
       $(`.bar nav a[href="#/${a1}"]`)?.setAttribute("aria-current", "true");
-      requestAnimationFrame(() => MO ? MO.scrollTo(target, wasProject) : target.scrollIntoView());
+      requestAnimationFrame(() => MO ? MO.scrollTo(target, wasAway) : target.scrollIntoView());
     } else MO ? MO.top() : window.scrollTo(0, 0);
   }
   function route() {
-    const goingToProject = /^#\/work\/.+/.test(location.hash);
-    const switching = lastView && ((goingToProject && lastView === "home") || (!goingToProject && lastView === "project") || (goingToProject && lastView === "project"));
+    const v = viewOf(location.hash);
+    const switching = lastView && (v !== lastView || v === "project");
     if (MO && switching) MO.transition(show); else show();
   }
   window.addEventListener("hashchange", route);

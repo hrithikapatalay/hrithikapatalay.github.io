@@ -34,7 +34,7 @@ window.CAPABILITIES = [
     line: "Using System 1 and System 2 thinking, identity labelling and sensory evidence to change what people actually do.",
   },
   {
-    key: "brand", name: "Luxury & brand strategy", hue: "#9C7A3C",
+    key: "brand", name: "Brand strategy", hue: "#9C7A3C",
     modules: [["Luxury Brand Management", 92], ["Brand Management", 90], ["Business Challenge: Luxury Brand Strategy", 85]],
     quote: "This is a sophisticated proposal. The strategic insight is distinctive, the recommendation is highly original.",
     source: "Luxury Brand Management",
@@ -70,12 +70,12 @@ window.CAPABILITIES = [
   },
 ];
 
-// grade = module grade for graded assignments; null for classwork.
-// format: Team | Individual | Classwork
+// format: Team | Individual | Classwork | Client. featured: 1-6 = order on the home page. live: brief came from the company itself.
+// logo (optional): path to an official logo file, e.g. "assets/logos/vivo.svg". Without one, the name is shown as text.
 window.PROJECTS = [
   {
-    slug: "bentley-motors", client: "Bentley Motors", title: "Built by entrepreneurs, for entrepreneurs",
-    cap: "brand", module: "Business Challenge: Luxury Brand Strategy", grade: 85, year: 2026, format: "Team", featured: true,
+    slug: "bentley-motors", client: "Bentley Motors", title: "Built by entrepreneurs, for entrepreneurs", live: true,
+    cap: "brand", module: "Business Challenge: Luxury Brand Strategy", grade: 85, year: 2026, format: "Team",
     role: "Strategy role in Group 1: problem definition, the four-gap diagnosis and the strategic response.",
     summary: "A live business challenge from Bentley Motors: 105 years of heritage and a full electric transition by 2035 are not landing with the Millennial and Gen Z buyers who now lead luxury purchasing.",
     points: [
@@ -88,7 +88,7 @@ window.PROJECTS = [
   },
   {
     slug: "canada-goose-2036", client: "Canada Goose", title: "From outerwear to Climate Escape Luxury",
-    cap: "brand", module: "Luxury Brand Management", grade: 92, year: 2026, format: "Team", featured: true,
+    cap: "brand", module: "Luxury Brand Management", grade: 92, year: 2026, format: "Team",
     role: "Team 4: signal research, personas, customer journey and the 2027 to 2036 roadmap.",
     summary: "A ten-year board strategy that moves Canada Goose from a winter-jacket brand to a 'Climate Luxury House' built on resale, adaptive climate technology and an invitation-only Arctic experience.",
     points: [
@@ -102,7 +102,7 @@ window.PROJECTS = [
   },
   {
     slug: "long-lane", client: "Long Lane", title: "Designing the future of conscious luxury",
-    cap: "brand", module: "Luxury Brand Management", grade: 92, year: 2026, format: "Individual", featured: true,
+    cap: "brand", module: "Luxury Brand Management", grade: 92, year: 2026, format: "Individual",
     role: "Sole author of the board proposal.",
     summary: "A board proposal for Long Lane, the UK's first fully sober country members' club and hotel, charting its evolution from sober hospitality into neuro-architected living grounded in clinical and behavioural science.",
     points: [
@@ -143,7 +143,8 @@ window.PROJECTS = [
   },
   {
     slug: "vivo-x200-fe", client: "vivo", title: "Brand relevance in the age of agentic search",
-    cap: "ai", module: "Business Challenge: AI Marketing", grade: 90, year: 2025, format: "Team", featured: true,
+    featured: 1, live: true,
+    cap: "ai", module: "Business Challenge: AI Marketing", grade: 90, year: 2025, format: "Team",
     role: "Research, analysis and strategy, with a focus on the AI visibility framework.",
     summary: "A ten-phase investigation into how AI search agents discover and rank smartphones, auditing the vivo X200 FE across ChatGPT, Gemini, Claude and Perplexity.",
     points: [
@@ -151,7 +152,7 @@ window.PROJECTS = [
       "Mapped why a competitive phone disappears from AI recommendations.",
       "Built an AI-ready product data sheet and a 30/60/90-day roadmap.",
     ],
-    quote: "Strong product–market understanding.",
+    quote: "The analysis identifies that Google and Samsung win in AI-driven discovery due to standardized specs, authority, and consistency, not necessarily superior products… The proposed fixes (JSON-LD product schema, OpenGraph, persona metadata, AI-friendly FAQs) are specific, realistic, and linked to improved AI ranking outcomes.",
     tags: ["Agentic search", "AI visibility audit", "Personas", "Structured data"],
     pdf: "vivo-x200-fe.pdf",
   },
@@ -213,7 +214,8 @@ window.PROJECTS = [
   },
   {
     slug: "fred-bakery", client: "FRED Bakery", title: "Winning the student market in Holborn",
-    cap: "analytics", module: "Marketing Metrics & Analytics", grade: 96, year: 2026, format: "Team", featured: true,
+    featured: 4, live: false,
+    cap: "analytics", module: "Marketing Metrics & Analytics", grade: 96, year: 2026, format: "Team",
     role: "Team 1: survey design and fieldwork, footfall observation, social analysis and recommendations.",
     summary: "Primary research and a measurement plan for London bakery FRED, showing it has a belonging problem, not a product problem, with the students on its doorstep.",
     points: [
@@ -221,7 +223,7 @@ window.PROJECTS = [
       "Analysed 72 posts: TikTok engagement ran at 19 times the benchmark.",
       "Compared attribution models and found last-click over-valued Google by 46%.",
     ],
-    quote: "You made a great effort to do 2 surveys - students and customers and doing the survey outside the shop gave you some good insights and showed good commitment.",
+    quote: "Doing the survey outside the shop gave you some good insights and showed good commitment… I loved the conclusion - they don't have a product problem, they have a belonging problem… Acquisition and attribution modelling are explained clearly and you have demonstrated that you know how to calculate them.",
     tags: ["Primary research", "Multi-touch attribution", "NPS", "Social analytics"],
     pdf: "fred-bakery.pdf",
   },
@@ -254,6 +256,21 @@ window.PROJECTS = [
     pdf: "data-viz.pdf",
   },
   {
+    slug: "american-express", client: "American Express", title: "A long-term investment case for a pension fund",
+    featured: 5, live: false,
+    cap: "analytics", module: "Data Visualisation", year: 2026, format: "Team",
+    role: "Group 1 team member.",
+    summary: "Should a long-term pension fund hold American Express? A benchmark of AXP against Visa and Mastercard on financial health, ESG governance and long-term strategy, judged through a responsible-investment lens like NEST's.",
+    points: [
+      "Indexed 2020 to 2024 share price and revenue: AXP finished highest, up about 58% against about 42% for Mastercard and 39% for Visa, with net income rebounding from $3.1bn to $10bn.",
+      "Read AXP's lower margins as a feature of its closed-loop lending model rather than weaker performance, and weighed its higher credit and cycle exposure.",
+      "Recommended a phased, risk-aware allocation: about 20 to 25% now, the rest in monthly tranches, paused if credit, competitiveness or ESG watchlist triggers fire.",
+    ],
+    quote: "Excellent work on the Amex analysis. You have done well in identifying the key performance indicators, identifying the benchmarks and comparing these numbers over time. Your recommendation is also very clear, and your narrative style is very good.",
+    tags: ["Financial benchmarking", "ESG analysis", "Investment recommendation", "Data visualisation"],
+    pdf: "amex.pdf",
+  },
+  {
     slug: "hm-analytics", client: "H&M", title: "Customer analytics report",
     cap: "analytics", module: "Business Insight through Data", grade: 88, year: 2025, format: "Individual",
     role: "Sole author.",
@@ -282,7 +299,7 @@ window.PROJECTS = [
   },
   {
     slug: "red-yellow-agency", client: "Red & Yellow", title: "The Creativity Suite pitch",
-    cap: "behaviour", module: "Neuromarketing", grade: 94, year: 2026, format: "Team", featured: true,
+    cap: "behaviour", module: "Neuromarketing", grade: 94, year: 2026, format: "Team",
     role: "Team of four: agency concept, research and pitch.",
     summary: "A neuromarketing agency pitch for a hotel group: a science-informed 50m² room for business travellers, built on five sensory levers.",
     points: [
@@ -338,7 +355,7 @@ window.PROJECTS = [
   },
   {
     slug: "jojos-vineyard", client: "JoJo's Vineyard", title: "The home of English wine discovery",
-    cap: "behaviour", module: "Consumer Behaviour", grade: 90, year: 2025, format: "Team", featured: true,
+    cap: "behaviour", module: "Consumer Behaviour", grade: 90, year: 2025, format: "Team",
     role: "Team 4 (The Mentalists): marketing plan for the vineyard's owners.",
     summary: "A marketing plan for a real English vineyard with a small budget: positioning, cellar-door growth, wine tourism and partnerships to sell stock profitably.",
     points: [
@@ -435,7 +452,8 @@ window.PROJECTS = [
   },
   {
     slug: "buzzballz", client: "BuzzBallz", title: "Market entry into Türkiye",
-    cap: "gtm", module: "Sales & Business Development", grade: 88, year: 2026, format: "Team", featured: true,
+    featured: 2, live: false,
+    cap: "gtm", module: "Sales & Business Development", grade: 88, year: 2026, format: "Team",
     role: "Team 1: market entry strategy.",
     summary: "A go-to-market strategy for a premium single-serve cocktail entering Türkiye's on-premise hospitality sector.",
     points: [
@@ -443,12 +461,13 @@ window.PROJECTS = [
       "Planned a pilot-first entry: Istanbul hotels and rooftop bars, then coastal beach clubs.",
       "Treated Year 1 as validation, with KPI gates before scaling.",
     ],
-    quote: "A strong, well-organised strategy with a clear operating theatre and a credible growth logic.",
+    quote: "The pricing section was one of your strongest: a skimming logic, guardrails to protect the premium RRP, and a smart “discovery bundle” that drives trial without breaking price integrity… your 90-day plan gave the work real execution credibility.",
     tags: ["Market entry", "Ansoff", "B2B hospitality", "Risk analysis"],
     pdf: "buzzballz.pdf",
   },
   {
     slug: "clearair-works", client: "ClearAir Works", title: "India market entry and sales strategy",
+    featured: 3, live: false,
     cap: "gtm", module: "Sales & Business Development", grade: 88, year: 2026, format: "Individual",
     role: "Individual consulting report.",
     summary: "A Year 1 market entry strategy for a commercial air filtration company entering India's B2B institutional market.",
@@ -457,7 +476,7 @@ window.PROJECTS = [
       "Turned the value proposition into commitments: energy savings, compliance support and service SLAs.",
       "Designed an eight-step sales process, hybrid distribution, pricing and a 12-month roadmap.",
     ],
-    quote: "This is a clear, well-structured report that demonstrates a solid understanding of a go-to-market strategy for ClearAir Works in India.",
+    quote: "The segmentation is well defined with clear customer groups, decision-makers, and buying triggers, and the value proposition is translated effectively into measurable commitments such as energy savings, compliance support, and service SLAs.",
     tags: ["B2B sales", "Market entry", "Pricing", "Channel management"],
     pdf: "clearair-works.pdf",
   },
@@ -545,6 +564,7 @@ window.PROJECTS = [
   },
   {
     slug: "upgrad-pricing", client: "upGrad", title: "Pricing architecture for ed-tech",
+    featured: 6, live: false,
     cap: "pricing", module: "Psychology of Pricing", grade: 88, year: 2026, format: "Individual",
     role: "Sole author.",
     summary: "A decoy-anchored good-better-best ladder for upGrad, replacing an unstructured price spread.",
@@ -553,7 +573,7 @@ window.PROJECTS = [
       "Applied anchoring and value-based pricing.",
       "Recommended a phased pilot with A/B testing.",
     ],
-    quote: "The proposed Good-Better-Best ladder is logically constructed and clearly linked to both commercial segmentation and psychological pricing effects.",
+    quote: "The proposed Good-Better-Best ladder is logically constructed and clearly linked to both commercial segmentation and psychological pricing effects, showing a sound ability to translate theory into managerial recommendations.",
     tags: ["Anchoring", "Value-based pricing", "A/B testing"],
     pdf: "upgrad-pricing.pdf",
   },
@@ -600,7 +620,7 @@ window.PROJECTS = [
   },
   {
     slug: "circular-way", client: "Circular Way", title: "Closing the intention–action gap",
-    cap: "sustainability", module: "Sustainable Brands & Products", grade: null, year: 2026, format: "Classwork", featured: true,
+    cap: "sustainability", module: "Sustainable Brands & Products", grade: null, year: 2026, format: "Classwork",
     role: "Project lead and strategic decision maker for Team 3.",
     summary: "Why people say they want sustainable fashion but don't buy it, and a rental subscription that removes the cost and effort excuses.",
     points: [
@@ -637,14 +657,75 @@ window.PROJECTS = [
     tags: ["Inclusive marketing", "Brand growth", "AI"],
     pdf: "inclusive-brands.pdf",
   },
+  {
+    slug: "bantu-wellness", client: "Bantu Wellness", title: "Social media and brand audit",
+    cap: "brand", module: "Independent client project", year: 2026, format: "Client",
+    role: "Sole strategist: analysed the account, wrote the report and presented the recommendations to the founder.",
+    summary: "A social media and brand audit for the founder of a women's wellness brand, turning instinct-led content into a structured system of content pillars, a weekly rhythm and a follower-to-customer journey.",
+    points: [
+      "Analysed the five highest-performing content patterns and what drove engagement, saves and leads.",
+      "Mapped them onto four content pillars, a weekly posting rhythm and a five-step customer journey.",
+      "Delivered a brand messaging system and a roadmap of workshops, events and community offers to grow revenue beyond digital products.",
+    ],
+    tags: ["Social media audit", "Content strategy", "Brand messaging", "Customer journey"],
+    pdf: null,
+  },
 ];
 
-window.MODULES = [
-  ["Marketing Metrics & Analytics", 96], ["AI Strategy", 95], ["Neuromarketing", 94],
-  ["Design Thinking", 92], ["Luxury Brand Management", 92], ["Communication through Influence", 91],
-  ["Digital Marketing Strategy", 91], ["Consumer Behaviour", 90], ["Business Challenge: AI Marketing", 90],
-  ["Brand Management", 90], ["Data Visualisation", 90], ["Business Insight through Data", 88],
-  ["Teamwork & Collaboration", 88], ["Sales & Business Development", 88], ["Project Planning & Execution", 88],
-  ["Psychology of Pricing", 88], ["New Product Development", 87], ["Sustainable Brands & Products", 87],
-  ["Business Challenge: Luxury Brand Strategy", 85],
+// Capability map: the disciplines hiring teams ask for, each with evidence.
+// src: "Deloitte" or "Hult". slug links to a project page.
+window.CAPABILITY_MAP = [
+  { name: "Go-to-market strategy & product launch", ev: [
+    { src: "Deloitte", text: "Contributed to the go-to-market launch of a tax-technology offering: 46% adoption across 120 clients" },
+    { src: "Hult", text: "BuzzBallz market entry into Türkiye", slug: "buzzballz" },
+    { src: "Hult", text: "ClearAir Works India go-to-market plan (individual)", slug: "clearair-works" } ] },
+  { name: "Pipeline management & revenue operations", ev: [
+    { src: "Deloitte", text: "Managed and forecast a ~£10m pipeline across 200+ EMEA clients in Salesforce, with an opportunity database running since FY22" } ] },
+  { name: "Win/loss analysis & market intelligence", ev: [
+    { src: "Deloitte", text: "Won, lost and abandoned tracking for every opportunity; a monthly MARCOM report for firm leadership on coverage, gaps, wins, losses and next-quarter focus, presented by the Partner" } ] },
+  { name: "Sales enablement & proposal strategy", ev: [
+    { src: "Deloitte", text: "A 300+ proposal library indexed by industry, service, country and pricing; 53 proposals and RFP responses; roadshow and client-workshop content" } ] },
+  { name: "Lifecycle, retention & account expansion", ev: [
+    { src: "Deloitte", text: "Renewal campaign with a 40–50% win rate on renewal opportunities; pull-through cross-sell to existing clients" } ] },
+  { name: "Pricing & commercial negotiation", ev: [
+    { src: "Deloitte", text: "Pricing and negotiation support on client contracts" },
+    { src: "Hult", text: "upGrad pricing architecture (individual)", slug: "upgrad-pricing" },
+    { src: "Hult", text: "Reliance Jio good-better-best pricing", slug: "reliance-jio" } ] },
+  { name: "Marketing & BD operations, process design", ev: [
+    { src: "Deloitte", text: "Redesigned the business development operating model, approved by the Partner and still in use; one go-to-market process across two tax service lines; client acceptance and conflict checks" } ] },
+  { name: "Financial analysis & investment narrative", ev: [
+    { src: "Hult", text: "American Express long-term investment case for a pension fund", slug: "american-express" },
+    { src: "Deloitte", text: "Three years inside a tax practice: tax returns, legislation research and compliance advice" } ] },
+  { name: "Brand strategy & positioning", ev: [
+    { src: "Hult", text: "Bentley Motors repositioning", slug: "bentley-motors", live: true },
+    { src: "Hult", text: "Canada Goose 2036", slug: "canada-goose-2036" },
+    { src: "Hult", text: "Long Lane board proposal (individual)", slug: "long-lane" } ] },
+  { name: "AI search, AEO & digital strategy", ev: [
+    { src: "Hult", text: "vivo visibility audit across ChatGPT, Gemini, Claude and Perplexity", slug: "vivo-x200-fe", live: true },
+    { src: "Hult", text: "Digital Brain Map GenAI product and go-to-market (individual)", slug: "ai-strategy" } ] },
+  { name: "Customer insight & primary research", ev: [
+    { src: "Hult", text: "FRED Bakery: 69 survey responses and 299 passers-by observed over five days", slug: "fred-bakery" },
+    { src: "Hult", text: "Stakeholder interview with a London GP", slug: "design-thinking" } ] },
+  { name: "Marketing analytics, measurement & attribution", ev: [
+    { src: "Hult", text: "FRED Bakery multi-touch attribution: last-click over-valued Google by 46%", slug: "fred-bakery" },
+    { src: "Hult", text: "Nykaa Man acquisition plan with RFM and LTV:CAC", slug: "nykaa-man" },
+    { src: "Hult", text: "eCommerce recovery forecast", slug: "data-viz" } ] },
+  { name: "Consumer psychology & behavioural science", ev: [
+    { src: "Hult", text: "Airbnb behaviour-change strategy", slug: "airbnb-stay-mindfully" },
+    { src: "Hult", text: "The Creativity Suite neuromarketing pitch", slug: "red-yellow-agency" } ] },
+  { name: "Content, social & community", ev: [
+    { src: "Hult", text: "FRED Bakery social analysis: TikTok engagement at 19 times the benchmark", slug: "fred-bakery" },
+    { src: "Hult", text: "The Hidden Influence Society content strategy", slug: "hidden-influence-society" },
+    { src: "Hult", text: "Founder of the Hult Marketing Club" } ] },
+  { name: "Events & field marketing", ev: [
+    { src: "Deloitte", text: "Guest list and welcome gifts for a 250-guest tax summit in London; roadshow content for EU tax services" },
+    { src: "Earlier", text: "Led a college's first Korean culture festival in Hyderabad, with State Government sponsorship" } ] },
+];
+
+// Companies behind the Hult case studies. Add logo: "assets/logos/<file>" to show an official logo instead of the name.
+window.BRANDS = [
+  { name: "vivo" }, { name: "American Express" }, { name: "BuzzBallz" }, { name: "upGrad" }, { name: "FRED" },
+  { name: "Bentley Motors" }, { name: "Canada Goose" }, { name: "Airbnb" }, { name: "Spotify" }, { name: "Reliance Jio" },
+  { name: "Tesco" }, { name: "Nykaa" }, { name: "H&M" }, { name: "Long Lane" }, { name: "DS Smith" }, { name: "Jude's" },
+  { name: "IKEA" }, { name: "Monday.com" }, { name: "JoJo's Vineyard" },
 ];

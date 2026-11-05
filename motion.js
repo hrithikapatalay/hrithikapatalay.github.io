@@ -19,7 +19,8 @@
   // ---------- smooth scroll ----------
   let lenis = null;
   if (window.Lenis) {
-    lenis = new window.Lenis({ duration: 1.15, smoothWheel: true });
+    // slower, calmer scroll: lower lerp and a reduced wheel multiplier
+    lenis = new window.Lenis({ lerp: 0.075, wheelMultiplier: 0.7, touchMultiplier: 1, smoothWheel: true });
     lenis.on("scroll", ST.update);
     gsap.ticker.add(t => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -94,22 +95,47 @@
     });
   }
 
-  // ---------- capability index ----------
+  // ---------- capability map ----------
   function capabilities() {
-    $$(".cap").forEach((li, i) => {
-      const dots = $$(".dot", li), range = $(".range", li), top = $(".cap-top", li);
-      gsap.set(li, { opacity: 0, y: 30 });
-      const left = dots.map(d => d.style.left);
-      dots.forEach(d => { d.style.left = "0%"; });
-      const rw = range.style.width; range.style.width = "0%";
-      ST.create({ trigger: li, start: "top 90%", once: true, onEnter: () => {
-        gsap.to(li, { opacity: 1, y: 0, duration: .9, ease: EASE, delay: (i % 4) * .06 });
-        dots.forEach((d, k) => gsap.to(d, { left: left[k], duration: 1.4, ease: "expo.inOut", delay: .2 + k * .08 }));
-        gsap.to(range, { width: rw, duration: 1.4, ease: "expo.inOut", delay: .25 });
-        const val = parseInt(top.firstChild.textContent, 10), o = { v: 80 };
-        gsap.to(o, { v: val, duration: 1.4, ease: "power3.out", delay: .2, onUpdate: () => { top.firstChild.textContent = Math.round(o.v) + "%"; } });
+    $$(".cm-row").forEach((li, i) => {
+      gsap.set(li, { opacity: 0, y: 26 });
+      ST.create({ trigger: li, start: "top 92%", once: true, onEnter: () => {
+        gsap.to(li, { opacity: 1, y: 0, duration: .9, ease: EASE, delay: (i % 3) * .05 });
+        gsap.from($$(".cm-ev li", li), { x: 18, opacity: 0, duration: .8, ease: EASE, stagger: .07, delay: .15 });
       } });
     });
+  }
+
+  // ---------- experience ----------
+  function experience() {
+    // count-up figures
+    $$(".xp-stats b[data-count]").forEach(b => {
+      const to = +b.dataset.count, pre = b.dataset.pre || "", suf = b.dataset.suf || "", o = { v: 0 };
+      b.textContent = pre + "0" + suf;
+      ST.create({ trigger: b, start: "top 90%", once: true, onEnter: () =>
+        gsap.to(o, { v: to, duration: 1.6, ease: "power3.out", onUpdate: () => { b.textContent = pre + Math.round(o.v) + suf; } }) });
+    });
+    fadeUp($$(".xp-stats li"));
+    // the loop draws itself, then each step lights up in order
+    const draw = $(".loop-draw"), steps = $$(".loop-steps li");
+    if (draw) {
+      gsap.set(draw, { strokeDashoffset: 1 });
+      gsap.set(steps, { opacity: 0, scale: .9 });
+      gsap.set(".loop-core", { opacity: 0 });
+      ST.create({ trigger: ".loop", start: "top 75%", once: true, onEnter: () => {
+        gsap.timeline()
+          .to(draw, { strokeDashoffset: 0, duration: 2.2, ease: "power2.inOut" })
+          .to(steps, { opacity: 1, scale: 1, duration: .6, ease: "back.out(1.6)", stagger: .3 }, .1)
+          .to(".loop-core", { opacity: 1, duration: .8 }, "-=.4");
+      } });
+    }
+    const week = $$(".week li");
+    gsap.set(week, { opacity: 0, x: -20 });
+    ST.create({ trigger: ".week", start: "top 85%", once: true,
+      onEnter: () => gsap.to(week, { opacity: 1, x: 0, duration: .8, ease: EASE, stagger: .12 }) });
+    fadeUp($$(".month, .plays li, .xp-role, .xp-more"));
+    const more = $(".xp-more");
+    if (more) more.addEventListener("toggle", () => { if (lenis) lenis.resize(); ST.refresh(); });
   }
   function toggle(body, open) {
     if (open) {
@@ -130,11 +156,12 @@
     mm.add("(min-width: 861px)", () => {
       const sec = $(".selected");
       const dist = () => Math.max(0, track.scrollWidth - pin.clientWidth);
-      const size = () => { sec.style.height = (dist() + window.innerHeight) + "px"; };
+      // a longer runway makes the horizontal track move more slowly per scroll
+      const size = () => { sec.style.height = (dist() * 1.6 + window.innerHeight) + "px"; };
       size();
       ST.addEventListener("refreshInit", size);
       hTween = gsap.to(track, { x: () => -dist(), ease: "none",
-        scrollTrigger: { trigger: sec, start: "top top", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true } });
+        scrollTrigger: { trigger: sec, start: "top top", end: "bottom bottom", scrub: 1.2, invalidateOnRefresh: true } });
       $$(".sel-card", track).forEach(card => {
         const cl = $(".sel-client", card);
         gsap.fromTo(cl, { xPercent: 12 }, { xPercent: -6, ease: "none",
@@ -239,12 +266,8 @@
 
   // ---------- misc reveals ----------
   function sections() {
-    $$(".section-head h2, .sub, .contact h2").forEach(h => revealHeading(h));
-    fadeUp($$(".section-head p, .filters, .role, .table-wrap, .contact p, .contact-links"));
-    $$(".modules .bar-fill").forEach(f => {
-      const w = f.style.width; f.style.width = "0%";
-      ST.create({ trigger: f, start: "top 95%", once: true, onEnter: () => gsap.to(f, { width: w, duration: 1.3, ease: "expo.out" }) });
-    });
+    $$("#home .section-head h2, .contact h2").forEach(h => revealHeading(h));
+    fadeUp($$("#home .section-head p, .sel-more, .contact p, .contact-links"));
     gsap.to(".progress", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: .3 } });
   }
 
@@ -252,7 +275,7 @@
     ST.refresh();
     if (lenis) lenis.resize();
     const y = el.getBoundingClientRect().top + window.scrollY - 20;
-    if (lenis) lenis.scrollTo(y, { immediate: !!fromProject, force: true, duration: 1.4 });
+    if (lenis) lenis.scrollTo(y, { immediate: !!fromProject, force: true, duration: 1.6 });
     else window.scrollTo(0, y);
   }
   function top() {
@@ -266,7 +289,7 @@
   window.MOTION = {
     toggle, onGrid, onProject, transition, scrollTo, top, refresh,
     ready() {
-      intro(); marquee(); capabilities(); selected(); sections(); cursor(); magnetic();
+      intro(); marquee(); experience(); capabilities(); selected(); sections(); cursor(); magnetic();
       const fix = () => { ST.refresh(); if (!$("#project").hidden) top(); };
       fix(); setTimeout(fix, 400);
       document.fonts && document.fonts.ready.then(fix);
