@@ -147,29 +147,12 @@
     }
   }
 
-  // ---------- selected work: horizontal pinned scroll ----------
-  let hTween = null;
+  // ---------- selected work: native side-scroll carousel (no scroll-jacking) ----------
   function selected() {
-    const pin = $(".sel-pin"), track = $("#sel");
-    if (!pin || !track) return;
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 861px)", () => {
-      const sec = $(".selected");
-      const dist = () => Math.max(0, track.scrollWidth - pin.clientWidth);
-      // a longer runway makes the horizontal track move more slowly per scroll
-      const size = () => { sec.style.height = (dist() * 1.6 + window.innerHeight) + "px"; };
-      size();
-      ST.addEventListener("refreshInit", size);
-      hTween = gsap.to(track, { x: () => -dist(), ease: "none",
-        scrollTrigger: { trigger: sec, start: "top top", end: "bottom bottom", scrub: 1.2, invalidateOnRefresh: true } });
-      $$(".sel-card", track).forEach(card => {
-        const cl = $(".sel-client", card);
-        gsap.fromTo(cl, { xPercent: 12 }, { xPercent: -6, ease: "none",
-          scrollTrigger: { trigger: card, containerAnimation: hTween, start: "left right", end: "right left", scrub: true } });
-      });
-      return () => { ST.removeEventListener("refreshInit", size); sec.style.height = ""; hTween = null; };
-    });
-    mm.add("(max-width: 860px)", () => { fadeUp($$(".sel-card", track)); });
+    const cards = $$(".sel-card");
+    gsap.set(cards, { opacity: 0, x: 60 });
+    ST.create({ trigger: ".selected", start: "top 85%", once: true,
+      onEnter: () => gsap.to(cards, { opacity: 1, x: 0, duration: 1.1, ease: EASE, stagger: .08 }) });
   }
 
   // ---------- grid ----------

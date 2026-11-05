@@ -8,7 +8,7 @@ window.SITE = {
   email: "hpatalay.freelance@gmail.com",
   linkedin: "https://www.linkedin.com/in/hrithika-patalay-338713172/",
   meeting: "https://calendar.app.google/n2P9qxfenhPuk8kK8",
-  cv: "assets/Hrithika_Patalay_CV.pdf?v=2026-11-05",
+  cv: "assets/Hrithika_Patalay_CV.pdf?v=2026-11-05b",
 };
 
 window.CAPABILITIES = [
@@ -682,17 +682,17 @@ window.CAPABILITY_MAP = [
   { name: "Pipeline management & revenue operations", ev: [
     { src: "Deloitte", text: "Managed and forecast a ~£10m pipeline across 200+ EMEA clients in Salesforce, with an opportunity database running since FY22" } ] },
   { name: "Win/loss analysis & market intelligence", ev: [
-    { src: "Deloitte", text: "Won, lost and abandoned tracking for every opportunity; a monthly MARCOM report for firm leadership on coverage, gaps, wins, losses and next-quarter focus, presented by the Partner" } ] },
+    { src: "Deloitte", text: "Win/loss tracking for every opportunity; a monthly MARCOM report for firm leadership on pipeline performance, sector coverage, win/loss and quarterly priorities, presented by the Partner" } ] },
   { name: "Sales enablement & proposal strategy", ev: [
     { src: "Deloitte", text: "A 300+ proposal library indexed by industry, service, country and pricing; 53 proposals and RFP responses; roadshow and client-workshop content" } ] },
   { name: "Lifecycle, retention & account expansion", ev: [
-    { src: "Deloitte", text: "Renewal campaign with a 40–50% win rate on renewal opportunities; pull-through cross-sell to existing clients" } ] },
+    { src: "Deloitte", text: "Renewal campaign with a 40–50% win rate on renewal opportunities; pull through services for existing clients" } ] },
   { name: "Pricing & commercial negotiation", ev: [
     { src: "Deloitte", text: "Pricing and negotiation support on client contracts" },
     { src: "Hult", text: "upGrad pricing architecture (individual)", slug: "upgrad-pricing" },
     { src: "Hult", text: "Reliance Jio good-better-best pricing", slug: "reliance-jio" } ] },
   { name: "Marketing & BD operations, process design", ev: [
-    { src: "Deloitte", text: "Redesigned the business development operating model, approved by the Partner and still in use; one go-to-market process across two tax service lines; client acceptance and conflict checks" } ] },
+    { src: "Deloitte", text: "Streamlined the business development workflow into one consistent pipeline view for leadership; one go-to-market process across two tax service lines; client acceptance and conflict checks" } ] },
   { name: "Financial analysis & investment narrative", ev: [
     { src: "Hult", text: "American Express long-term investment case for a pension fund", slug: "american-express" },
     { src: "Deloitte", text: "Three years inside a tax practice: tax returns, legislation research and compliance advice" } ] },
@@ -715,8 +715,7 @@ window.CAPABILITY_MAP = [
     { src: "Hult", text: "The Creativity Suite neuromarketing pitch", slug: "red-yellow-agency" } ] },
   { name: "Content, social & community", ev: [
     { src: "Hult", text: "FRED Bakery social analysis: TikTok engagement at 19 times the benchmark", slug: "fred-bakery" },
-    { src: "Hult", text: "The Hidden Influence Society content strategy", slug: "hidden-influence-society" },
-    { src: "Hult", text: "Founder of the Hult Marketing Club" } ] },
+    { src: "Hult", text: "The Hidden Influence Society content strategy", slug: "hidden-influence-society" } ] },
   { name: "Events & field marketing", ev: [
     { src: "Deloitte", text: "Guest list and welcome gifts for a 250-guest tax summit in London; roadshow content for EU tax services" },
     { src: "Earlier", text: "Led a college's first Korean culture festival in Hyderabad, with State Government sponsorship" } ] },

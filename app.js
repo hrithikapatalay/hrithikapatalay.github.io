@@ -83,6 +83,38 @@
       </div></a></li>`;
   }).join("");
 
+  // ---------- six cases: side-scroll carousel ----------
+  (function carousel() {
+    const sc = $("#sel-scroller"), track = $("#sel"), count = $("#sel-count");
+    if (!sc) return;
+    const cards = () => Array.from(track.children);
+    const step = () => { const c = cards()[0]; return c ? c.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 28) : sc.clientWidth; };
+    const current = () => Math.round(sc.scrollLeft / step());
+    const update = () => {
+      const n = cards().length, i = Math.min(n - 1, current());
+      count.textContent = String(i + 1).padStart(2, "0") + " / " + String(n).padStart(2, "0");
+      $("#sel-prev").disabled = sc.scrollLeft < 4;
+      $("#sel-next").disabled = sc.scrollLeft > sc.scrollWidth - sc.clientWidth - 4;
+    };
+    $("#sel-prev").addEventListener("click", () => sc.scrollBy({ left: -step(), behavior: "smooth" }));
+    $("#sel-next").addEventListener("click", () => sc.scrollBy({ left: step(), behavior: "smooth" }));
+    sc.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") { e.preventDefault(); sc.scrollBy({ left: step(), behavior: "smooth" }); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); sc.scrollBy({ left: -step(), behavior: "smooth" }); }
+    });
+    sc.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener("resize", update);
+    // drag to scroll with a mouse
+    let down = false, startX = 0, startL = 0, moved = false;
+    sc.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") return; down = true; moved = false; startX = e.clientX; startL = sc.scrollLeft; sc.classList.add("dragging"); });
+    window.addEventListener("pointermove", e => { if (!down) return; const dx = e.clientX - startX; if (Math.abs(dx) > 4) moved = true; sc.scrollLeft = startL - dx; });
+    window.addEventListener("pointerup", () => { if (!down) return; down = false; sc.classList.remove("dragging");
+      const i = Math.round(sc.scrollLeft / step()); sc.scrollTo({ left: i * step(), behavior: "smooth" }); });
+    sc.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    sc.addEventListener("dragstart", e => e.preventDefault());
+    update();
+  })();
+
   // ---------- marquee ----------
   const run = BRANDS.map(b => `<span>${mark(b.name, b.logo, "mq")}</span><i></i>`).join("");
   $("#marquee").innerHTML = `<div class="marquee-run">${run}</div><div class="marquee-run">${run}</div>`;
